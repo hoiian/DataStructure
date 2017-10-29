@@ -6,11 +6,10 @@ int main(){
 
     tra(8);
     for(i=0;i<8;i++){
-        printf("\n");
         for(j=0;j<8;j++){
             printf("%2d ",board[i][j]);
-           
         }
+        printf("\n");
     }
 
   //  printf("%d\n",ktmove1[i]);
@@ -30,9 +29,11 @@ int tra(int n){
     int min,mintmp;
     i=0;
     j=0;
-    
+
     for(m=2;m<=(n*n);m++){
-        for(l=0;l<npos;l++){
+        for(l=0;l<8;l++)
+            exits[l] = 0;
+        l=0;
             for(k=0;k<8;k++){
                 testi = i + ktmove1[k];
                 testj = j + ktmove2[k];
@@ -41,24 +42,25 @@ int tra(int n){
                     if(board[testi][testj] == 0){
                         nexti[l] = testi;
                         nextj[l] = testj;
+                        //  printf("(%d,%d)\n",nexti[l],nextj[l]);
+                        l++;
                     }
-                    l++;
+                    
                 }
             }
-            npos++;
-        }
-
+            npos = l;
+        
+        
         if(npos > 1){
             for(l=0;l<npos;l++){
                 for(k=0;k<8;k++){
                     testi = nexti[l] + ktmove1[k];
-                    testj = nexti[j] + ktmove2[k];
+                    testj = nextj[l] + ktmove2[k];
                     
                     if(testi >= 0 && testj >=0 && testi <n && testj < n){
                         if(board[testi][testj] == 0){
                             exits[l]++;
                         }
-                        
                     }
                 }
             }
@@ -72,7 +74,11 @@ int tra(int n){
                     min = l ;
                 }
             }
-        }
+            printf("min:%d\n",l);
+            printf("pos:%d\n",npos);
+            
+        }else if(npos == 1)
+            min = 0;
 
         i = nexti[min];
         j = nextj[min];
