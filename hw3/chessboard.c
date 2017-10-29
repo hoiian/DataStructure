@@ -2,14 +2,17 @@
 int board[8][8] = {1,0};
 int tra(int);
 int main(){
-    int i,j;
+    int i,j,n;
 
-    tra(8);
-    for(i=0;i<8;i++){
-        for(j=0;j<8;j++){
-            printf("%2d ",board[i][j]);
+    for(n=5;n<8;n++){
+        tra(n);
+        printf("n=%d\n",n);
+        for(i=0;i<n;i++){
+            for(j=0;j<n;j++){
+                printf("%2d ",board[i][j]);
+            }
+            printf("\n");
         }
-        printf("\n");
     }
 
   //  printf("%d\n",ktmove1[i]);
@@ -30,6 +33,9 @@ int tra(int n){
     i=0;
     j=0;
 
+    // if(n<=4){
+    //     return 0;
+    // }
     for(m=2;m<=(n*n);m++){
         for(l=0;l<8;l++)
             exits[l] = 0;
@@ -74,8 +80,8 @@ int tra(int n){
                     min = l ;
                 }
             }
-            printf("min:%d\n",l);
-            printf("pos:%d\n",npos);
+            // printf("min:%d\n",l);
+            // printf("pos:%d\n",npos);
             
         }else if(npos == 1)
             min = 0;
