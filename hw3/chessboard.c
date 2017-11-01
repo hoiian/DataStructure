@@ -1,18 +1,22 @@
 #include <stdio.h>
+
 int board[8][8] = {1,0};
 int tra(int);
 int main(){
     int i,j,n;
 
-    for(n=5;n<8;n++){
-        tra(n);
-        printf("n=%d\n",n);
-        for(i=0;i<n;i++){
-            for(j=0;j<n;j++){
-                printf("%2d ",board[i][j]);
+    for(n=1;n<=8;n++){
+        printf("n=%d:\n",n);
+        if(tra(n)){
+            for(i=0;i<n;i++){
+                for(j=0;j<n;j++){
+                    printf("%2d ",board[i][j]);
+                }
+                printf("\n");
             }
             printf("\n");
-        }
+        }else
+            printf("no solution.\n\n");
     }
 
   //  printf("%d\n",ktmove1[i]);
@@ -30,8 +34,17 @@ int tra(int n){
     int i,j,k,l,m;
     int testi, testj;
     int min,mintmp;
+    int a,b;
+
+    for(a=0;a<8;a++){
+        for(b=0;b<8;b++){
+            board[a][b] = 0;
+        }
+    }
+    
     i=0;
     j=0;
+    board[0][0] = 1;    
 
     // if(n<=4){
     //     return 0;
@@ -56,8 +69,13 @@ int tra(int n){
             }
             npos = l;
         
-        
-        if(npos > 1){
+        if(npos == 0){
+            return 0;
+        }
+        else if(npos == 1){
+            min = 0;
+        }
+        else if(npos > 1){
             for(l=0;l<npos;l++){
                 for(k=0;k<8;k++){
                     testi = nexti[l] + ktmove1[k];
@@ -83,13 +101,13 @@ int tra(int n){
             // printf("min:%d\n",l);
             // printf("pos:%d\n",npos);
             
-        }else if(npos == 1)
-            min = 0;
+        }
+            
 
         i = nexti[min];
         j = nextj[min];
         board[i][j] = m;
     }
-    return l;
+    return 1;
 
 }
