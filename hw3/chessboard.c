@@ -46,9 +46,6 @@ int tra(int n){
     j=0;
     board[0][0] = 1;    
 
-    // if(n<=4){
-    //     return 0;
-    // }
     for(m=2;m<=(n*n);m++){
         for(l=0;l<8;l++)
             exits[l] = 0;
