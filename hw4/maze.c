@@ -9,10 +9,13 @@ typedef struct {
 } element; //x=row,y=col,z=dir
 #define MAXSTACK 100 /*定義最大堆疊容量*/
 element stack[MAXSTACK];  //堆疊的陣列宣告 
+element position;
+// element stack[n*m];
 int top=-1;		//堆疊的頂端
 int isEmpty();
 void push(element); 
 element pop();
+
 
 
 int main(){
@@ -92,40 +95,54 @@ int main(){
     printf("exit:(%d,%d)\n",exit_x,exit_y);
 
 
-    typedef struct {
-        short int vert;
-        short int horiz;
-    }   offsets;
-    offsets move[8];
+    // typedef struct {
+    //     short int vert;
+    //     short int horiz;
+    // }   offsets;
+    // offsets move[8];
 
-    element position;
-    element stack[n*m];
+
     int nextx,nexty,x,y,z,found = 0;
-    char mark[n][m];
-    mark[0][0] = '*';
-    int top = 0;
+    int mark[n+2][m+2];
 
-    
+    for(i=0;i<n+2;i++){
+        for(j=0;j<m+2;j++){
+            mark[i][j] = 0;
+        }
+     }
+
+    mark[1][1] = 1;
+
     int movex[8] = {-1,-1,0,1,1,1,0,-1};
     int movey[8] = {0,1,1,1,0,-1,-1,-1};
 
-    stack[0].x = 0;
-    stack[0].y = 0;
+    stack[0].x = 1;
+    stack[0].y = 1;
     stack[0].z = 1;
+    printf("x%d,y%d,z%d\n",stack[0].x,stack[0].y,stack[0].z);
 
+    top = 0;
 
-    while(top > -1 && !found) {
+    // position = stack[0]; // take the top element from stack.
+    // x = position.x;
+    // y = position.y;
+    // z = position.z;
+    // printf("x%d,y%d,z%d\n",x,y,z);
+
+    while(top>-1 && !found) {
         position = pop(); // take the top element from stack.
         x = position.x;
         y = position.y;
         z = position.z;
+        printf("~x%d,y%d,z%d\n",x,y,z);
         while(z<8 && !found){
             nextx = x + movex[z];
             nexty = y + movey[z];
+            printf("nextx:%d,nexty:%d\n",nextx,nexty);
             if(nextx == exit_x && nexty == exit_y )
                 found = 1;
-            else if(maze[nextx][nexty] == '0' &&  mark[nextx][nexty] !='*') {
-                mark[nextx][nexty] = '*';
+            else if(maze[nextx][nexty] == '0' && !mark[nextx][nexty]) {
+                mark[nextx][nexty] = 1;
                 position.x = x;
                 position.y = y;
                 position.z = ++z;
@@ -133,6 +150,7 @@ int main(){
                 x = nextx;
                 y = nexty;
                 z = 0;
+                printf("^~~~~~\n");
             }
             else ++z;
         }
@@ -141,12 +159,24 @@ int main(){
     
     if(found) {
         printf("the path is:\n");
-        for(i=0;i<top;i++)
+        for(i=1;i<=top;i++)
         {
             printf("%2d%5d",stack[i].x,stack[i].y);
             printf("\n");
+            maze[stack[i].x][stack[i].y] = '*';
         }
         printf("%2d%5d\n",x,y);
+        maze[x][y] = '*';
+
+        printf("result:\n");
+        for(i=1;i<n+1;i++){
+            for(j=1;j<m+1;j++){
+                printf("%c",maze[i][j]);
+            }
+            printf("\n");
+        }
+
+        printf("%d steps\n",(top+3));
     }
 
     return 0;
@@ -173,6 +203,9 @@ element pop(){
 	if(isEmpty()){
 		printf("堆疊已空\n");
 	}else{
+        printf("top:%d\n",top);
+        printf("pop:x%d,y%d,z%d\n",stack[top].x,stack[top].y,stack[top].z);
+
 		return stack[top--]; 
     }
 }
