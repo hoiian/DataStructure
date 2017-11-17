@@ -111,15 +111,15 @@ int main(){
         }
      }
 
-    mark[1][1] = 1;
+    mark[start_x][start_y] = 1;
 
     int movex[8] = {-1,-1,0,1,1,1,0,-1};
     int movey[8] = {0,1,1,1,0,-1,-1,-1};
 
-    stack[0].x = 1;
-    stack[0].y = 1;
-    stack[0].z = 1;
-    printf("x%d,y%d,z%d\n",stack[0].x,stack[0].y,stack[0].z);
+    stack[0].x = start_x;
+    stack[0].y = start_y;
+    stack[0].z = 0;
+    // printf("x%d,y%d,z%d\n",stack[0].x,stack[0].y,stack[0].z);
 
     top = 0;
 
@@ -134,11 +134,11 @@ int main(){
         x = position.x;
         y = position.y;
         z = position.z;
-        printf("~x%d,y%d,z%d\n",x,y,z);
+        // printf("~x%d,y%d,z%d\n",x,y,z);
         while(z<8 && !found){
             nextx = x + movex[z];
             nexty = y + movey[z];
-            printf("nextx:%d,nexty:%d\n",nextx,nexty);
+            // printf("nextx:%d,nexty:%d\n",nextx,nexty);
             if(nextx == exit_x && nexty == exit_y )
                 found = 1;
             else if(maze[nextx][nexty] == '0' && !mark[nextx][nexty]) {
@@ -150,7 +150,7 @@ int main(){
                 x = nextx;
                 y = nexty;
                 z = 0;
-                printf("^~~~~~\n");
+                // printf("^~~~~~\n");
             }
             else ++z;
         }
@@ -158,14 +158,13 @@ int main(){
     }
     
     if(found) {
-        printf("the path is:\n");
         for(i=1;i<=top;i++)
         {
-            printf("%2d%5d",stack[i].x,stack[i].y);
-            printf("\n");
+            // printf("%2d%5d",stack[i].x,stack[i].y);
+            // printf("\n");
             maze[stack[i].x][stack[i].y] = '*';
         }
-        printf("%2d%5d\n",x,y);
+        // printf("%2d%5d\n",x,y);
         maze[x][y] = '*';
 
         printf("result:\n");
@@ -203,9 +202,8 @@ element pop(){
 	if(isEmpty()){
 		printf("堆疊已空\n");
 	}else{
-        printf("top:%d\n",top);
-        printf("pop:x%d,y%d,z%d\n",stack[top].x,stack[top].y,stack[top].z);
-
+        // printf("top:%d\n",top);
+        // printf("pop:x%d,y%d,z%d\n",stack[top].x,stack[top].y,stack[top].z);
 		return stack[top--]; 
     }
 }
