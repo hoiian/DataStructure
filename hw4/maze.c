@@ -17,7 +17,9 @@ element pop();
 
 int main(){
     int n,m;
-    int i;
+    int i,j;
+    int start_x,start_y;
+    int exit_x,exit_y;
     scanf("%d%d",&n,&m);
     printf("%d*%d maze\n",n,m);
     
@@ -25,51 +27,128 @@ int main(){
         printf("n and m must less than 1001.\n");
         return 0;
     }
-    char maze[n][m];
-    for(i=0;i<m;i++)
+
+    char input[n][m];
+    char maze[n+2][m+2];
+
+    for(i=0;i<n;i++)
     {
-        scanf("%s",maze[i]);
+        scanf("%s",input[i]);
+        // printf("i=%d:%s",i,input[i]);
+    }
+    printf("input:\n");
+    // display each string
+    // for(i=0;i<m;i++)
+    // {
+    //     printf("i=%d:%s",i,input[i]);
+    //     printf("\n");
+    // }
+
+     for(i=0;i<n;i++){
+        for(j=0;j<m;j++){
+            printf("%c",input[i][j]);
+        }
+        printf("\n");
+     }
+
+    // for(i=0;i<n+2;i++){
+    //     for(j=0;j<m+2;j++){
+    //         maze[i][j]='0';
+    //     }
+    // }
+
+    for(i=0;i<n;i++){
+        for(j=0;j<m;j++){
+            maze[i+1][j+1] = input[i][j];
+        }
     }
 
-    printf("\n");
-    //display each string
-    for(i=0;i<m;i++)
-    {
-        printf("%s",maze[i]);
+    for(i=0;i<n+2;i++){
+        maze[i][0]='1';
+        maze[i][m+1]='1';
+    }
+    for(i=0;i<m+2;i++){
+        maze[0][i]='1';
+        maze[n+1][i]='1';
+    }
+
+    for(i=0;i<n+2;i++){
+        for(j=0;j<m+2;j++){
+            printf("%c",maze[i][j]);
+
+            if(maze[i][j] == 's'){
+                start_x = i;
+                start_y = j;
+            }
+            if(maze[i][j] == 'd'){
+                exit_x = i;
+                exit_y = j;
+            }
+        }
         printf("\n");
     }
 
-    // typedef struct {
-    //     short int vert;
-    //     short int horiz;
-    // }   offsets;
-    // offsets move[8];
+    printf("start:(%d,%d)\n",start_x,start_y);
+    printf("exit:(%d,%d)\n",exit_x,exit_y);
+
+
+    typedef struct {
+        short int vert;
+        short int horiz;
+    }   offsets;
+    offsets move[8];
 
     element position;
     element stack[n*m];
     int nextx,nexty,x,y,z,found = 0;
-    int mark[n][m];
-    mark[0][0] = 1;
+    char mark[n][m];
+    mark[0][0] = '*';
     int top = 0;
 
-    stack[0].x = 1;
-    stack[0].y = 1;
-    stack[0].z = 1;
-
-    while(top > -1 && !found) {
-        position = pop();
-
-    }
     
-
-
     int movex[8] = {-1,-1,0,1,1,1,0,-1};
     int movey[8] = {0,1,1,1,0,-1,-1,-1};
 
-    nextx = x + movex[z];
-    nexty = y + movey[z];
+    stack[0].x = 0;
+    stack[0].y = 0;
+    stack[0].z = 1;
 
+
+    while(top > -1 && !found) {
+        position = pop(); // take the top element from stack.
+        x = position.x;
+        y = position.y;
+        z = position.z;
+        while(z<8 && !found){
+            nextx = x + movex[z];
+            nexty = y + movey[z];
+            if(nextx == exit_x && nexty == exit_y )
+                found = 1;
+            else if(maze[nextx][nexty] == '0' &&  mark[nextx][nexty] !='*') {
+                mark[nextx][nexty] = '*';
+                position.x = x;
+                position.y = y;
+                position.z = ++z;
+                push(position);
+                x = nextx;
+                y = nexty;
+                z = 0;
+            }
+            else ++z;
+        }
+
+    }
     
+    if(found) {
+        printf("the path is:\n");
+        for(i=0;i<top;i++)
+        {
+            printf("%2d%5d",stack[i].x,stack[i].y);
+            printf("\n");
+        }
+        printf("%2d%5d\n",x,y);
+    }
+
     return 0;
 }
 
