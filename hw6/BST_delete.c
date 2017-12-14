@@ -91,7 +91,7 @@ void setindex(struct node *root)
     // while(root != NULL){
         
         if(root == NULL ){
-            printf("*  *  ");
+            // printf("*  *  ");
             
         }else {
             int k = root->index;
@@ -106,7 +106,7 @@ void setindex(struct node *root)
                 printf("-(%d)  ", temleft->index);
                 tree[temleft->index] = temleft->key;
             }else{
-                printf("*  ");
+                // printf("*  ");
             }
             
             if(temright != NULL){
@@ -115,7 +115,7 @@ void setindex(struct node *root)
                 printf("-(%d)  ", temright->index);
                 tree[temright->index] = temright->key;
             }else{
-                printf("*  ");
+                // printf("*  ");
             }
 
             // printf("\n");
@@ -317,9 +317,9 @@ int main() {
     int element;
 
     // 16,5,31,2,7,49,6,44,82
-    // char str[256];
-    char str[]="16,5,31,2,1,7,49,6,44,82,30";
-    // scanf("%s",str);
+    char str[256];
+    // char str[]="16,5,31,2,1,7,49,6,44,82,30";
+    scanf("%s",str);
     char *pt;
     pt = strtok (str,",");
     while (pt != NULL) {
