@@ -39,7 +39,7 @@ int main(){
         scanf("%s",input[i]);
         // printf("i=%d:%s",i,input[i]);
     }
-    printf("input:\n");
+    // printf("input:\n");
     // display each string
     // for(i=0;i<m;i++)
     // {
@@ -47,12 +47,14 @@ int main(){
     //     printf("\n");
     // }
 
-     for(i=0;i<n;i++){
-        for(j=0;j<m;j++){
-            printf("%c",input[i][j]);
-        }
-        printf("\n");
-     }
+    //  for(i=0;i<n;i++){
+    //     for(j=0;j<m;j++){
+    //         printf("%c",input[i][j]);
+    //     }
+    //     printf("\n");
+    //  }
+    
+    //to print the input
 
     // for(i=0;i<n+2;i++){
     //     for(j=0;j<m+2;j++){
@@ -77,7 +79,7 @@ int main(){
 
     for(i=0;i<n+2;i++){
         for(j=0;j<m+2;j++){
-            printf("%c",maze[i][j]);
+            // printf("%c",maze[i][j]);
 
             if(maze[i][j] == 's'){
                 start_x = i;
@@ -88,11 +90,11 @@ int main(){
                 exit_y = j;
             }
         }
-        printf("\n");
+        // printf("\n");
     }
 
     printf("start:(%d,%d)\n",start_x,start_y);
-    printf("exit:(%d,%d)\n",exit_x,exit_y);
+    printf("exit:(%d,%d)\n\n",exit_x,exit_y);
 
 
     // typedef struct {
@@ -176,6 +178,8 @@ int main(){
         }
 
         printf("%d steps\n",(top+3));
+    } else {
+        printf("No route.\n");
     }
 
     return 0;

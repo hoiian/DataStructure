@@ -2,16 +2,32 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
+
 
 #define max(x,y)  ( x>y?x:y )
 
 struct node
 {
     int key;
+    int index;
     struct node *left, *right;
 };
 
-int height=1;
+int myPow(int x,int n)
+{
+    int i; /* Variable used in loop counter */
+    int number = 1;
+
+    for (i = 0; i < n; ++i)
+        number *= x;
+
+    return(number);
+}
+
+int height;
+int node_num;
+int tree[100] = {0};
 
 int minDepth(struct node *root)
 {
@@ -52,37 +68,17 @@ int maxDepth(struct node* node)
    }
 } 
 
-void inorder(struct node *root)
-{
-    if (root != NULL)
-    {
-        inorder(root->left);
-        printf("%d ", root->key);
-        inorder(root->right);
-    }
-}
-
-void preorder(struct node *root)
-{
-    if(root != NULL)
-    {
-        printf("%d ",root->key);
-        preorder(root->left);
-        preorder(root->right);
-    }
-}
-
 void printkey(struct node *root){
     if(root != NULL){
-        printf("%-3d", root->key);
+        printf("%d", root->key);
     }else printf("*  ");
 }
 
-void printchild(struct node *root)
+void setindex(struct node *root)
 {
     struct node *temleft;
     struct node *temright;
-    int i;
+    // int i;
     // printf("%d ", root->key);
     // printf("\n");
     // print(root->left);
@@ -96,20 +92,41 @@ void printchild(struct node *root)
         
         if(root == NULL ){
             printf("*  *  ");
+            
         }else {
+            int k = root->index;
+            tree[root->index] = root->key;
+            // printf("k=%d ",k);
             temleft = root->left;
             temright = root->right;
-            printkey(temleft);
-            printkey(temright);
-            printf("\n");
-            printkey(temleft->left);
-            printkey(temleft->right);
-            printkey(temright->left);
-            printkey(temright->right); 
-            printf("\n");
+
+            if(temleft != NULL){
+                temleft->index = k*2;
+                printkey(temleft);
+                printf("-(%d)  ", temleft->index);
+                tree[temleft->index] = temleft->key;
+            }else{
+                printf("*  ");
+            }
+            
+            if(temright != NULL){
+                temright->index = k*2 +1;
+                printkey(temright);
+                printf("-(%d)  ", temright->index);
+                tree[temright->index] = temright->key;
+            }else{
+                printf("*  ");
+            }
+
+            // printf("\n");
+            // printkey(temleft->left);
+            // printkey(temleft->right);
+            // printkey(temright->left);
+            // printkey(temright->right); 
+            // printf("\n");
             // if((temleft != NULL || temright != NULL)){
-            // printchild(temleft);
-            // printchild(temright);
+            // setindex(temleft);
+            // setindex(temright);
             // printf("\n");
             // }
         }
@@ -125,24 +142,30 @@ void print(struct node *root)
 {
     struct node *temleft;
     struct node *temright;
+    if((root->left != NULL || root->right != NULL) && root != NULL){
     temleft = root->left;
     temright = root->right;
-    int i;
+    // int i;
 
     // if(temleft != NULL || temright != NULL){
         // printkey(root);
         // printf("\n");
-        // printchild(root);
+        setindex(root);
+        if(temleft != NULL)
+            print(temleft);
+        if(temright != NULL)
+            print(temright);
         // printf("\n");
-        printchild(temleft);
+        // setindex(temleft);
         // printf("/");
-        printchild(temright);
-        printf("\n");
+        // setindex(temright);
         // printf("\n");
-        printchild(temleft->left);
-        printchild(temleft->right);
-        printchild(temright->left);
-        printchild(temright->right);
+        // printf("\n");
+        // setindex(temleft->left);
+        // setindex(temleft->right);
+        // setindex(temright->left);
+        // setindex(temright->right);
+
         // if(temleft != NULL && root != NULL){
         //     print(temleft);
         //     printf("\n");
@@ -153,45 +176,9 @@ void print(struct node *root)
         // }
         
     // } else
-    
+    }
 
 }
-
-void printtree(struct node **head_node)
-{
-    struct node *head;
-    head = *head_node;
-    if(head == NULL)
-    {
-        printf("* \n");
-        return;
-    }
-    else
-    {
-        printkey(head);
-        printchild(head);
-        printchild(head->left);
-        printchild(head->right);
-        printtree(&(head->left));
-        // printtree(&(head->right));
-    }
-}
-
-// void PrintTree(struct node *root, int leftAlignment, int level)
-// {
-//      if (root==NULL)
-//      {
-//          return;
-//      }
-
-//      printf("%d,%d", level, leftAlignment * 4);
-//      printf("%d",root->key);
-
-//      PrintTree(root->left, leftAlignment - 1, level + 1);
-//      PrintTree(root->right, leftAlignment + 1, level + 1);
-// }
-
-
 
 struct node *newNode(int item)
 {
@@ -199,6 +186,7 @@ struct node *newNode(int item)
     temp->key = item;
     temp->left = temp->right = NULL;
     // temp->left->key = temp->right->key = -1;
+    temp->index = -1;
     return temp;
 }
  
@@ -209,39 +197,128 @@ struct node* insert(struct node* node, int key)
     if (node == NULL) return newNode(key);
  
     /* Otherwise, recur down the tree */
-    if (key < node->key)
+    if (key < node->key){
         node->left  = insert(node->left, key);
-    else
+
+        // tree[node->index * 2] = node->left->key;
+    }
+    else{
         node->right = insert(node->right, key);
+        // tree[node->index * 2 +1] = node->right->key;
+    }
+        
  
     /* return the (unchanged) node pointer */
     return node;
 }
 
+struct node * minValueNode(struct node* node)
+{
+    struct node* current = node;
+ 
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+ 
+    return current;
+}
+
+struct node* deleteNode(struct node* root, int key)
+{
+    // base case
+    if (root == NULL) return root;
+ 
+    // If the key to be deleted is smaller than the root's key,
+    // then it lies in left subtree
+    if (key < root->key)
+        root->left = deleteNode(root->left, key);
+ 
+    // If the key to be deleted is greater than the root's key,
+    // then it lies in right subtree
+    else if (key > root->key)
+        root->right = deleteNode(root->right, key);
+ 
+    // if key is same as root's key, then This is the node
+    // to be deleted
+    else
+    {
+        // node with only one child or no child
+        if (root->left == NULL)
+        {
+            struct node *temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL)
+        {
+            struct node *temp = root->left;
+            free(root);
+            return temp;
+        }
+ 
+        // node with two children: Get the inorder successor (smallest
+        // in the right subtree)
+        struct node* temp = minValueNode(root->right);
+ 
+        // Copy the inorder successor's content to this node
+        root->key = temp->key;
+ 
+        // Delete the inorder successor
+        root->right = deleteNode(root->right, temp->key);
+    }
+    return root;
+}
+
+void finalprint(){
+    int lev=1;
+    int i;
+    for(i=1; i<node_num-1;i++){
+        if(tree[i]==0){
+            printf("*  ");
+        } else {
+            printf("%-3d", tree[i]);
+        }
+    
+        if(i==lev){
+            lev = lev * 2 +1;
+            printf("\n");
+        }
+    }
+}
+
+int havekey(key){
+    int i;
+    for(i=1; i<node_num-1; i++){
+        if(tree[i]==key){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void cleankey(){
+    int i;
+    for(i=1; i<node_num-1;i++){
+        if(tree[i]==0){
+            // printf("*  ");
+        } else {
+            // printf("%-3d", tree[i]);
+            tree[i] = 0;
+            
+        }
+
+    }
+}
 
 int main() {
 
     struct node *root = NULL;
-    // root = insert(root, 16);
-    // root = insert(root, 5);
-    // root = insert(root, 31);
-    // root = insert(root, 2);
-    // root = insert(root, 7);
-    // root = insert(root, 49);
-    // root = insert(root, 6);
-    // root = insert(root, 44);
-    // root = insert(root, 82);
-    // root = insert(root, 30);
+    char yesno;
+    int element;
 
-    int ch;
-    // do{
-    //     ch = getchar();
-    //     printf("%c", ch);
-    // }while(ch!=','|| ch!='\n');
-    
     // 16,5,31,2,7,49,6,44,82
     // char str[256];
-    char str[]="16,5,31,2,7,49,6,44,82";
+    char str[]="16,5,31,2,1,7,49,6,44,82,30";
     // scanf("%s",str);
     char *pt;
     pt = strtok (str,",");
@@ -252,12 +329,42 @@ int main() {
         pt = strtok (NULL, ",");
     }
 
-    printf("depth:%d\n",maxDepth(root));
-// 
-    // preorder(root);
-    // printtree(&root);
-    // print(root);
-    printchild(root);
-    // PrintTree(root,0,0);
+    height = maxDepth(root);
+    printf("height:%d\n",height);
+
+    node_num = myPow(2,height)+1;
+    printf("node num:%d\n", node_num);
+    // tree[node_num];
+
+    // tree[1] = root->key;
+    root->index = 1;
+
+    print(root);
+    printf("\n");
+    finalprint();
+
+    while(1){
+        printf("Delete element?(Y/N):");
+        scanf("%c",&yesno);
+        if(yesno=='Y'){
+            printf("Choose element:");
+            scanf("%d",&element);
+            if(havekey(element)){
+                deleteNode(root,element);
+                cleankey();
+                print(root);
+                printf("\n");
+                finalprint();
+            }else{
+                printf("%d is not in the tree.\n",element);
+            }
+            
+            // tree[1] = root->key;
+        }
+        if(yesno=='N'){
+            return 0;
+        }
+    }
+
     return 0;
 }
