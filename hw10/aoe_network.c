@@ -2,15 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-#ifndef max
-#define max(a,b) a>b? a : b
-#endif
+#define max(a,b)  ( a>b ? a : b )
+#define min(x,y)  ( x<y ? x : y )
 
 int a[100][100];
+int a_num[100][100];
 int n;
 int count = 0,count_for_late = 0;
-int eee[100];
+int ee[100];
+int le[100];
 
 int FindEarlyTime(int row, int col){
 	int i,j;
@@ -28,7 +28,7 @@ int FindEarlyTime(int row, int col){
 				printf("Not Feasible.");
 				exit(1);
 			}
-        eee[i] = max_value;
+        // eee[i] = max_value;
 		 return max_value;
 	}
 } 
@@ -58,8 +58,8 @@ int FindLateTime(int row , int col){
 int main(){
 	int i,j;
 	int e[100],l[100];
-	char string_show[2];
-	int ee = 0;
+	// char string_show[2];
+	// int ee = 0;
 	
     scanf("%d",&n);
     int input[n][4];
@@ -73,41 +73,67 @@ int main(){
         for(j=0;j<4;j++){
             // printf("(%d,%d):%d",i+1,j+1,input[i][j]);
             a[input[i][1]][input[i][2]] = input[i][3];
+            a_num[input[i][1]][input[i][2]] = input[i][0];
         }
             // printf("\n");
     }
 
-	for (i=0;i<n;i++)
-		for (j=0;j<n;j++)
+	for (i=0;i<n;i++){
+		for (j=0;j<n;j++){
 			if ( a[j][i] != 0 )
 			{ 
 				if (i == j)
 				{
 					printf("The node cannot point to itself.");
 					return 1;
-				} 
+				}
+
 				e[count] = FindEarlyTime(j,i);
 				count++;
+                
 				if (i == n-1)
-						ee = max ( ee , e[count-1] + a[j][i] ); // Get ee. 	
-			} 
-			
+						ee[n-1] = max ( ee[count] , e[count-1] + a[j][i] ); // Get ee. 	
+			}
+
+        }
+    }
+		
 	count_for_late = count;		
 	for (i=n-1;i>=0;i--)
 		for (j=n-1;j>=0;j--)
 			if ( a[j][i] != 0) 
-				l[--count_for_late] = ee-FindLateTime(j,i);	 // calculate l from le
+				l[--count_for_late] = ee[n-1]-FindLateTime(j,i);	 // calculate l from le
 
-    printf("a.\n");
+    for (i=0;i<n;i++)
+		for (j=0;j<n;j++){
+            ee[i] = max(ee[i],e[a_num[i][j]-1]);
+            le[i] = 99;
+        }
+
+    le[n-1] = ee[n-1];
+    for (i=n-1;i>=0;i--){
+        for (j=n-1;j>=0;j--){
+            if(a[i][j] != 0){
+                if(le[j]-a[i][j] < le[i])
+                    le[i] = le[j]-a[i][j];
+            }
+        }	       
+    }
+		
+                    // le[i] = min(le[i], le[j]-a[i][j]);
+			
+    
+    printf("\na.\n");
     printf("    ee  le\n");
     for(i=0;i<count;i++)
     {
-        printf("%d  ",i);
-        printf("%d\n",eee[i]);
+        printf("%d   ",i);
+        printf("%-4d",ee[i]);
+        printf("%d\n",le[i]);
     }
 
 
-	printf("b.\n");
+	printf("\nb.\n");
 	printf("    e   l   s   c\n");
 	for (i=0;i<count;i++)
 	{
@@ -119,9 +145,6 @@ int main(){
             printf("Y\n");
         else printf("N\n");
 	}
-
-//	fout = fopen("out.txt","w");
-//	fclose(fout);
 
 }
  
